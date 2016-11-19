@@ -107,42 +107,48 @@ public class FastMRP {
     }
 
     private void writeMRPToFile() throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter(MRP_FILENAME));
-        writeHeaderToFile(out);
-        // iterate over sequences, one by one
-        PER_TAXA_INFO.startSeqIteration();
-        while (PER_TAXA_INFO.hasMoreTaxa()) {
-            PER_TAXA_INFO.nextSequence();
-            writeSequenceNameToFile(out);
-            int column = 0;
-            Integer nextOneColumn = PER_TAXA_INFO.nextBipartitionIndexForCurrentSequence();
-            TREE_END_INDEX.restartTreeIteration();
-            for (int tree = 0; tree < treeCount; tree++) {
-                int treeEndInd = TREE_END_INDEX.getNexTreeEndInd();
-                if (PER_TAXA_INFO.currentSeqIsInTree(tree)) {
-                    while (column <= treeEndInd) {
-                        Boolean coding = PER_TAXA_INFO.columnCoding.get(column);
-                        if (nextOneColumn == column) {
-                            out.write(coding ? ONE : ZERO);
-                            nextOneColumn = PER_TAXA_INFO.nextBipartitionIndexForCurrentSequence();
-                        } else {
-                            out.write(coding ? ZERO : ONE);
+        try (BufferedWriter OUT = new BufferedWriter(
+                new FileWriter(MRP_FILENAME))) {
+            writeHeaderToFile(OUT);
+            // iterate over sequences, one by one
+            PER_TAXA_INFO.startSeqIteration();
+            while (PER_TAXA_INFO.hasMoreTaxa()) {
+                Integer nextOneColumn;
+                
+                PER_TAXA_INFO.nextSequence();
+                writeSequenceNameToFile(OUT);
+                nextOneColumn = 
+                        PER_TAXA_INFO.nextBipartitionIndexForCurrentSequence();
+                TREE_END_INDEX.restartTreeIteration();
+                for (int tree = 0, column = 0; tree < treeCount; tree++) {
+                    int treeEndInd = TREE_END_INDEX.getNexTreeEndInd();
+                    
+                    if (PER_TAXA_INFO.currentSeqIsInTree(tree)) {
+                        while (column <= treeEndInd) {
+                            Boolean coding = 
+                                    PER_TAXA_INFO.columnCoding.get(column);
+                            
+                            if (nextOneColumn == column) {
+                                OUT.write(coding ? ONE : ZERO);
+                                nextOneColumn = PER_TAXA_INFO.nextBipartitionIndexForCurrentSequence();
+                            } else {
+                                OUT.write(coding ? ZERO : ONE);
+                            }
+                            column++;
                         }
-                        column++;
+                    } else {
+                        char[] missings = new char[treeEndInd - column + 1];
+                        
+                        Arrays.fill(missings, MISSING);
+                        OUT.write(missings);
+                        column = treeEndInd + 1;
                     }
-                } else {
-                    int missingCount = treeEndInd - column + 1;
-                    char[] missings = new char[missingCount];
-                    Arrays.fill(missings, MISSING);
-                    out.write(missings);
-                    column = treeEndInd + 1;
                 }
+                OUT.newLine();
             }
-            out.newLine();
+            writeFooterToFile(OUT);
+            OUT.flush();
         }
-        writeFooterToFile(out);
-        out.flush();
-        out.close();
     }
 
     private void writeFooterToFile(BufferedWriter out) throws IOException {
