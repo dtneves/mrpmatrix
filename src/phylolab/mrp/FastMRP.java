@@ -38,10 +38,9 @@ public class FastMRP {
     /** First list is the STACK position, each Collection is a bipartition 
      * (i.e index of taxa in one of the partitions) */
     private final LinkedList<Collection<Integer>> STACK;
-
-    char ONE = '1';
-    char ZERO = '0';
-    char MISSING = '?';
+    private char one;
+    private char zero;
+    private char missing;
 
     public FastMRP(
             final String IN_FILENAME, 
@@ -53,12 +52,15 @@ public class FastMRP {
         this.PER_TAXA_INFO = new InfoPerTaxa();
         this.TREE_END_INDEX = new TreeEndIndex();
         this.STACK = new LinkedList<>();
+        this.one = '1';
+        this.zero = '0';
+        this.missing = '?';
     }
 
     public void setCharacters(char newOne, char newZero, char newMissing) {
-        ONE = newOne;
-        ZERO = newZero;
-        MISSING = newMissing;
+        one = newOne;
+        zero = newZero;
+        missing = newMissing;
     }
 
     private void readTreesFile() throws IOException {
@@ -129,17 +131,17 @@ public class FastMRP {
                                     PER_TAXA_INFO.columnCoding.get(column);
                             
                             if (nextOneColumn == column) {
-                                OUT.write(coding ? ONE : ZERO);
+                                OUT.write(coding ? one : zero);
                                 nextOneColumn = PER_TAXA_INFO.nextBipartitionIndexForCurrentSequence();
                             } else {
-                                OUT.write(coding ? ZERO : ONE);
+                                OUT.write(coding ? zero : one);
                             }
                             column++;
                         }
                     } else {
                         char[] missings = new char[treeEndIndex - column + 1];
                         
-                        Arrays.fill(missings, MISSING);
+                        Arrays.fill(missings, missing);
                         OUT.write(missings);
                         column = treeEndIndex + 1;
                     }
