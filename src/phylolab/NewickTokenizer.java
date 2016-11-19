@@ -37,16 +37,16 @@ public final class NewickTokenizer {
     }
 
     public final String nextToken() {
-        String res = PATTERN.group();
+        final String RES = PATTERN.group();
 
         PATTERN.find();
         // This is to STRIP off any support value / internal label nodes 
         // that can follow a left bracket.
-        if (STRIP && res.startsWith(")")) {
+        if (STRIP && RES.startsWith(")")) {
             return ")";
         }
-        if (res != null) {
-            switch (res) {
+        if (RES != null) {
+            switch (RES) {
                 case "":
                     final String TOKEN = nextToken();
                     
@@ -57,7 +57,7 @@ public final class NewickTokenizer {
                     return nextToken();
             }
         }
-        return res != null ? res.trim() : null;
+        return RES != null ? RES.trim() : null;
     }
 
     public static void main(final String[] ARGS) {
