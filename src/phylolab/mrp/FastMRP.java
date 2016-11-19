@@ -75,25 +75,31 @@ public class FastMRP {
             }
             while (tokenizer.hasNext()) {
                 String token = tokenizer.nextToken();
-                if ("(".equals(token)) {
-                    STACK.addLast(new Vector<>());
-                } else if (")".equals(token)) {
-                    if (STACK.size() > 0) {
-                        Collection<Integer> top = STACK.getLast();
-                        lastColumnInd = PER_TAXA_INFO.addBipartition(top);
-                        STACK.removeLast();
+                
+                if (token != null) switch (token) {
+                    case "(":
+                        STACK.addLast(new Vector<>());
+                        break;
+                    case ")":
                         if (STACK.size() > 0) {
-                            STACK.getLast().addAll(top);
+                            Collection<Integer> top = STACK.getLast();
+                            lastColumnInd = PER_TAXA_INFO.addBipartition(top);
+                            STACK.removeLast();
+                            if (STACK.size() > 0) {
+                                STACK.getLast().addAll(top);
+                            }
                         }
-                    }
-                } else if (";".equals(token)) {
-                    TREE_END_INDEX.addEndIndex(lastColumnInd);
-                } else {
-                    Integer seqId = PER_TAXA_INFO.mapNamesToIds(token);
-                    if (STACK.size() > 0) {
-                        STACK.getLast().add(seqId);
-                    }
-                    PER_TAXA_INFO.addTreeToSequence(seqId, treeId);
+                        break;
+                    case ";":
+                        TREE_END_INDEX.addEndIndex(lastColumnInd);
+                        break;
+                    default:
+                        Integer seqId = PER_TAXA_INFO.mapNamesToIds(token);
+                        if (STACK.size() > 0) {
+                            STACK.getLast().add(seqId);
+                        }
+                        PER_TAXA_INFO.addTreeToSequence(seqId, treeId);
+                        break;
                 }
             }
             treeId++;
