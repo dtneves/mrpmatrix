@@ -48,10 +48,13 @@ public class FastMRP {
 
     Random random = null;
 
-    public FastMRP(String inFileName, String outFileName, String format) {
-        TREES_FILENAME = inFileName;
-        MRP_FILENAME = outFileName;
-        this.FORMAT = format;
+    public FastMRP(
+            final String IN_FILENAME, 
+            final String OUT_FILENAME, 
+            final String FORMAT) {
+        this.TREES_FILENAME = IN_FILENAME;
+        this.MRP_FILENAME = OUT_FILENAME;
+        this.FORMAT = FORMAT;
     }
 
     public void setCharacters(char newOne, char newZero, char newMissing) {
