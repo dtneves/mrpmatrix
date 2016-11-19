@@ -6,18 +6,20 @@ import java.util.regex.Pattern;
 public final class NewickTokenizer {
 
     private Matcher pattern;
-    private boolean strip;
+    private final boolean STRIP;
 
     public NewickTokenizer(final String INPUT) {
-        init(INPUT, true);
+        this.STRIP = true;
+        init(INPUT);
     }
 
     public NewickTokenizer(final String INPUT, final boolean STRIP) {
-        init(INPUT, STRIP);
+        this.STRIP = STRIP;
+        init(INPUT);
     }
 
-    private void init(final String INPUT, final boolean STRIP) {
-        if (strip = STRIP) {
+    private void init(final String INPUT) {
+        if (this.STRIP) {
             pattern = Pattern.compile(
                     "([(])|([)][^,:;)]*)|([;])|(:)|([^,);(:]*)").matcher(INPUT);
         } else {
@@ -35,9 +37,9 @@ public final class NewickTokenizer {
         String res = pattern.group();
 
         pattern.find();
-        // This is to strip off any support value / internal label nodes 
+        // This is to STRIP off any support value / internal label nodes 
         // that can follow a left bracket.
-        if (strip && res.startsWith(")")) {
+        if (STRIP && res.startsWith(")")) {
             return ")";
         }
         if (res != null) {
@@ -47,7 +49,7 @@ public final class NewickTokenizer {
                     
                     return TOKEN.isEmpty() ? null : TOKEN;
                 case ":":
-                    // This is to strip off the branch lenght values.
+                    // This is to STRIP off the branch lenght values.
                     nextToken();
                     return nextToken();
             }
