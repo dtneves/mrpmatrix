@@ -51,7 +51,7 @@ public final class NewickTokenizer {
                 nextToken();
                 return nextToken();
         }
-        return res;
+        return res != null ? res.trim() : null;
     }
 
     public static void main(final String[] ARGS) {
