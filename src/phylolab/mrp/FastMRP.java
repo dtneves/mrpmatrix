@@ -190,7 +190,7 @@ public class FastMRP {
             System.err.println("Usage: <trees_file> <output> <output_format> [-dna] [-randomize seed]\n"
                     + "		<trees_file>: A file containing Newick trees, one tree per line\n"
                     + "		<output>: The name of the output matrix representation (MR) file\n"
-                    + "		<output_format>: use NEXUS for nexus, PHYLIP for phylip, or FASTA for fasta fromatted output\n"
+                    + "		<output_format>: use NEXUS for nexus, PHYLIP for phylip, or FASTA for fasta formatted output\n"
                     + " 	-dna: output As and Ts instead of 0 and 1\n"
                     + "		-randomize: randomize 0-1 codings, the seed number is optional.");
 
