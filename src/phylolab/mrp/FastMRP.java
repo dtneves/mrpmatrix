@@ -34,9 +34,6 @@ public class FastMRP {
     char ZERO = '0';
     char MISSING = '?';
 
-    InfoPerTaxa perTaxaInfo = new InfoPerTaxa();
-    TreeEndIndix treeEndIndix = new TreeEndIndix();
-
     // First list is the stack position, Each Collection is a bipartition (i.e index of taxa in one of the partitions)
     LinkedList<Collection<Integer>> stack = new LinkedList<>();
 
@@ -45,6 +42,8 @@ public class FastMRP {
     private final String FORMAT;
     private Random random;
     private int treeCount;
+    private final InfoPerTaxa PER_TAXA_INFO;
+    private final TreeEndIndix TREE_END_INDEX;
 
     public FastMRP(
             final String IN_FILENAME, 
@@ -53,6 +52,8 @@ public class FastMRP {
         this.TREES_FILENAME = IN_FILENAME;
         this.MRP_FILENAME = OUT_FILENAME;
         this.FORMAT = FORMAT;
+        PER_TAXA_INFO = new InfoPerTaxa();
+        TREE_END_INDEX = new TreeEndIndix();
     }
 
     public void setCharacters(char newOne, char newZero, char newMissing) {
@@ -79,20 +80,20 @@ public class FastMRP {
                 } else if (")".equals(token)) {
                     if (stack.size() > 0) {
                         Collection<Integer> top = stack.getLast();
-                        lastColumnInd = perTaxaInfo.addBipartition(top);
+                        lastColumnInd = PER_TAXA_INFO.addBipartition(top);
                         stack.removeLast();
                         if (stack.size() > 0) {
                             stack.getLast().addAll(top);
                         }
                     }
                 } else if (";".equals(token)) {
-                    treeEndIndix.addEndIndex(lastColumnInd);
+                    TREE_END_INDEX.addEndIndex(lastColumnInd);
                 } else {
-                    Integer seqId = perTaxaInfo.mapNamesToIds(token);
+                    Integer seqId = PER_TAXA_INFO.mapNamesToIds(token);
                     if (stack.size() > 0) {
                         stack.getLast().add(seqId);
                     }
-                    perTaxaInfo.addTreeToSequence(seqId, treeId);
+                    PER_TAXA_INFO.addTreeToSequence(seqId, treeId);
                 }
             }
             treeId++;
@@ -104,21 +105,21 @@ public class FastMRP {
         BufferedWriter out = new BufferedWriter(new FileWriter(MRP_FILENAME));
         writeHeaderToFile(out);
         // iterate over sequences, one by one
-        perTaxaInfo.startSeqIteration();
-        while (perTaxaInfo.hasMoreTaxa()) {
-            perTaxaInfo.nextSequence();
+        PER_TAXA_INFO.startSeqIteration();
+        while (PER_TAXA_INFO.hasMoreTaxa()) {
+            PER_TAXA_INFO.nextSequence();
             writeSequenceNameToFile(out);
             int column = 0;
-            Integer nextOneColumn = perTaxaInfo.nextBipartitionIndexForCurrentSequence();
-            treeEndIndix.restartTreeIteration();
+            Integer nextOneColumn = PER_TAXA_INFO.nextBipartitionIndexForCurrentSequence();
+            TREE_END_INDEX.restartTreeIteration();
             for (int tree = 0; tree < treeCount; tree++) {
-                int treeEndInd = treeEndIndix.getNexTreeEndInd();
-                if (perTaxaInfo.currentSeqIsInTree(tree)) {
+                int treeEndInd = TREE_END_INDEX.getNexTreeEndInd();
+                if (PER_TAXA_INFO.currentSeqIsInTree(tree)) {
                     while (column <= treeEndInd) {
-                        Boolean coding = perTaxaInfo.columnCoding.get(column);
+                        Boolean coding = PER_TAXA_INFO.columnCoding.get(column);
                         if (nextOneColumn == column) {
                             out.write(coding ? ONE : ZERO);
-                            nextOneColumn = perTaxaInfo.nextBipartitionIndexForCurrentSequence();
+                            nextOneColumn = PER_TAXA_INFO.nextBipartitionIndexForCurrentSequence();
                         } else {
                             out.write(coding ? ZERO : ONE);
                         }
@@ -147,23 +148,23 @@ public class FastMRP {
 
     private void writeHeaderToFile(BufferedWriter out) throws IOException {
         if (NEXUS.equalsIgnoreCase(FORMAT)) {
-            String header = NEXUS_HEADER.replaceFirst("@", perTaxaInfo.getNumberOfTaxa() + "").
-                    replaceFirst("@", perTaxaInfo.getNumberOfBipartitions() + "");
+            String header = NEXUS_HEADER.replaceFirst("@", PER_TAXA_INFO.getNumberOfTaxa() + "").
+                    replaceFirst("@", PER_TAXA_INFO.getNumberOfBipartitions() + "");
             out.write(header);
         } else if (PHYLIP.equalsIgnoreCase(FORMAT)) {
-            String header = PHYLIP_HEADER.replaceFirst("@", perTaxaInfo.getNumberOfTaxa() + "").
-                    replaceFirst("@", perTaxaInfo.getNumberOfBipartitions() + "");
+            String header = PHYLIP_HEADER.replaceFirst("@", PER_TAXA_INFO.getNumberOfTaxa() + "").
+                    replaceFirst("@", PER_TAXA_INFO.getNumberOfBipartitions() + "");
             out.write(header);
         }
     }
 
     private void writeSequenceNameToFile(BufferedWriter out) throws IOException {
         if (NEXUS.equals(FORMAT)) {
-            out.write("\t'" + perTaxaInfo.getCurrentSeqName() + "' ");
+            out.write("\t'" + PER_TAXA_INFO.getCurrentSeqName() + "' ");
         } else if (FORMAT.equalsIgnoreCase(PHYLIP)) {
-            out.write(perTaxaInfo.getCurrentSeqName() + " ");
+            out.write(PER_TAXA_INFO.getCurrentSeqName() + " ");
         } else {
-            out.write(">" + perTaxaInfo.getCurrentSeqName());
+            out.write(">" + PER_TAXA_INFO.getCurrentSeqName());
             out.newLine();
         }
     }
