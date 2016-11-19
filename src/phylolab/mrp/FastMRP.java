@@ -207,7 +207,7 @@ public class FastMRP {
         }
     }
 
-    class InfoPerTaxa {
+    private class InfoPerTaxa {
 
         Integer currentSeqIndex = -1;
         Integer currentColumnInd = -1;
