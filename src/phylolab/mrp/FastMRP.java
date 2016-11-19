@@ -45,8 +45,7 @@ public class FastMRP {
     private final String TREES_FILENAME;
     private final String MRP_FILENAME;
     private final String FORMAT;
-
-    Random random = null;
+    private Random random;
 
     public FastMRP(
             final String IN_FILENAME, 
