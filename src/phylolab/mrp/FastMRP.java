@@ -29,14 +29,6 @@ public class FastMRP {
             + "end;\n";
     private static final String PHYLIP = "PHYLIP";
     private static final String PHYLIP_HEADER = "@ @\n";
-
-    char ONE = '1';
-    char ZERO = '0';
-    char MISSING = '?';
-
-    // First list is the stack position, Each Collection is a bipartition (i.e index of taxa in one of the partitions)
-    LinkedList<Collection<Integer>> stack = new LinkedList<>();
-
     private final String TREES_FILENAME;
     private final String MRP_FILENAME;
     private final String FORMAT;
@@ -44,6 +36,13 @@ public class FastMRP {
     private int treeCount;
     private final InfoPerTaxa PER_TAXA_INFO;
     private final TreeEndIndex TREE_END_INDEX;
+    /** First list is the STACK position, each Collection is a bipartition 
+     * (i.e index of taxa in one of the partitions) */
+    private final LinkedList<Collection<Integer>> STACK;
+
+    char ONE = '1';
+    char ZERO = '0';
+    char MISSING = '?';
 
     public FastMRP(
             final String IN_FILENAME, 
@@ -52,8 +51,9 @@ public class FastMRP {
         this.TREES_FILENAME = IN_FILENAME;
         this.MRP_FILENAME = OUT_FILENAME;
         this.FORMAT = FORMAT;
-        PER_TAXA_INFO = new InfoPerTaxa();
-        TREE_END_INDEX = new TreeEndIndex();
+        this.PER_TAXA_INFO = new InfoPerTaxa();
+        this.TREE_END_INDEX = new TreeEndIndex();
+        this.STACK = new LinkedList<>();
     }
 
     public void setCharacters(char newOne, char newZero, char newMissing) {
@@ -76,22 +76,22 @@ public class FastMRP {
             while (tokenizer.hasNext()) {
                 String token = tokenizer.nextToken();
                 if ("(".equals(token)) {
-                    stack.addLast(new Vector<>());
+                    STACK.addLast(new Vector<>());
                 } else if (")".equals(token)) {
-                    if (stack.size() > 0) {
-                        Collection<Integer> top = stack.getLast();
+                    if (STACK.size() > 0) {
+                        Collection<Integer> top = STACK.getLast();
                         lastColumnInd = PER_TAXA_INFO.addBipartition(top);
-                        stack.removeLast();
-                        if (stack.size() > 0) {
-                            stack.getLast().addAll(top);
+                        STACK.removeLast();
+                        if (STACK.size() > 0) {
+                            STACK.getLast().addAll(top);
                         }
                     }
                 } else if (";".equals(token)) {
                     TREE_END_INDEX.addEndIndex(lastColumnInd);
                 } else {
                     Integer seqId = PER_TAXA_INFO.mapNamesToIds(token);
-                    if (stack.size() > 0) {
-                        stack.getLast().add(seqId);
+                    if (STACK.size() > 0) {
+                        STACK.getLast().add(seqId);
                     }
                     PER_TAXA_INFO.addTreeToSequence(seqId, treeId);
                 }
