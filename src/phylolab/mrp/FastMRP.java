@@ -43,7 +43,7 @@ public class FastMRP {
     private Random random;
     private int treeCount;
     private final InfoPerTaxa PER_TAXA_INFO;
-    private final TreeEndIndix TREE_END_INDEX;
+    private final TreeEndIndex TREE_END_INDEX;
 
     public FastMRP(
             final String IN_FILENAME, 
@@ -53,7 +53,7 @@ public class FastMRP {
         this.MRP_FILENAME = OUT_FILENAME;
         this.FORMAT = FORMAT;
         PER_TAXA_INFO = new InfoPerTaxa();
-        TREE_END_INDEX = new TreeEndIndix();
+        TREE_END_INDEX = new TreeEndIndex();
     }
 
     public void setCharacters(char newOne, char newZero, char newMissing) {
@@ -313,7 +313,7 @@ public class FastMRP {
         }
     }
 
-    class TreeEndIndix {
+    private class TreeEndIndex {
         /*
          * Index to list~ tree, Integer ~ the index of the last column of the tree
          */
