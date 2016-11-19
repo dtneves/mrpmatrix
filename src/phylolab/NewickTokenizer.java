@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 public final class NewickTokenizer {
 
-    private String tree;
     private Matcher pattern;
     private boolean strip;
 
@@ -18,14 +17,12 @@ public final class NewickTokenizer {
     }
 
     private void init(final String INPUT, final boolean STRIP) {
-        tree = INPUT;
-        strip = STRIP;
-        if (strip) {
+        if (strip = STRIP) {
             pattern = Pattern.compile(
-                    "([(])|([)][^,:;)]*)|([;])|(:)|([^,);(:]*)").matcher(tree);
+                    "([(])|([)][^,:;)]*)|([;])|(:)|([^,);(:]*)").matcher(INPUT);
         } else {
             pattern = Pattern.compile(
-                    "([(])|([)][^,;)]*)|([;])|([^,);(]*)").matcher(tree);
+                    "([(])|([)][^,;)]*)|([;])|([^,);(]*)").matcher(INPUT);
         }
         pattern.find();
     }
