@@ -121,10 +121,10 @@ public class FastMRP {
                         PER_TAXA_INFO.nextBipartitionIndexForCurrentSequence();
                 TREE_END_INDEX.restartTreeIteration();
                 for (int tree = 0, column = 0; tree < treeCount; tree++) {
-                    int treeEndInd = TREE_END_INDEX.getNexTreeEndInd();
+                    int treeEndIndex = TREE_END_INDEX.getNexTreeEndInd();
                     
                     if (PER_TAXA_INFO.currentSeqIsInTree(tree)) {
-                        while (column <= treeEndInd) {
+                        while (column <= treeEndIndex) {
                             Boolean coding = 
                                     PER_TAXA_INFO.columnCoding.get(column);
                             
@@ -137,11 +137,11 @@ public class FastMRP {
                             column++;
                         }
                     } else {
-                        char[] missings = new char[treeEndInd - column + 1];
+                        char[] missings = new char[treeEndIndex - column + 1];
                         
                         Arrays.fill(missings, MISSING);
                         OUT.write(missings);
-                        column = treeEndInd + 1;
+                        column = treeEndIndex + 1;
                     }
                 }
                 OUT.newLine();
