@@ -5,38 +5,41 @@ import java.util.regex.Pattern;
 
 public final class NewickTokenizer {
 
-    private Matcher pattern;
+    private final Matcher PATTERN;
     private final boolean STRIP;
 
     public NewickTokenizer(final String INPUT) {
         this.STRIP = true;
-        init(INPUT);
+        if (this.STRIP) {
+            PATTERN = Pattern.compile(
+                    "([(])|([)][^,:;)]*)|([;])|(:)|([^,);(:]*)").matcher(INPUT);
+        } else {
+            PATTERN = Pattern.compile(
+                    "([(])|([)][^,;)]*)|([;])|([^,);(]*)").matcher(INPUT);
+        }
+        PATTERN.find();
     }
 
     public NewickTokenizer(final String INPUT, final boolean STRIP) {
         this.STRIP = STRIP;
-        init(INPUT);
-    }
-
-    private void init(final String INPUT) {
         if (this.STRIP) {
-            pattern = Pattern.compile(
+            PATTERN = Pattern.compile(
                     "([(])|([)][^,:;)]*)|([;])|(:)|([^,);(:]*)").matcher(INPUT);
         } else {
-            pattern = Pattern.compile(
+            PATTERN = Pattern.compile(
                     "([(])|([)][^,;)]*)|([;])|([^,);(]*)").matcher(INPUT);
         }
-        pattern.find();
+        PATTERN.find();
     }
 
     public final boolean hasNext() {
-        return !pattern.hitEnd();
+        return !PATTERN.hitEnd();
     }
 
     public final String nextToken() {
-        String res = pattern.group();
+        String res = PATTERN.group();
 
-        pattern.find();
+        PATTERN.find();
         // This is to STRIP off any support value / internal label nodes 
         // that can follow a left bracket.
         if (STRIP && res.startsWith(")")) {
