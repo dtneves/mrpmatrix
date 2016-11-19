@@ -14,7 +14,7 @@ It uses some tricks to use very little time and memory.
 Usage: <trees_file> <output> <output_format> [-dna] [-randomize seed]
                 <trees_file>: A file containing Newick trees, one tree per line
                 <output>: The name of the output matrix representation (MR) file
-                <output_format>: use NEXUS for nexus, PHYLIP for phylip, or FASTA for fasta fromatted output
+                <output_format>: use NEXUS for nexus, PHYLIP for phylip, or FASTA for fasta formatted output
                 -dna: output As and Ts instead of 0 and 1
                 -randomize: randomize 0-1 codings, the seed number is optional
 ```
