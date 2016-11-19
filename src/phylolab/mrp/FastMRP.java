@@ -40,12 +40,11 @@ public class FastMRP {
     // First list is the stack position, Each Collection is a bipartition (i.e index of taxa in one of the partitions)
     LinkedList<Collection<Integer>> stack = new LinkedList<>();
 
-    int treeCount;
-
     private final String TREES_FILENAME;
     private final String MRP_FILENAME;
     private final String FORMAT;
     private Random random;
+    private int treeCount;
 
     public FastMRP(
             final String IN_FILENAME, 
