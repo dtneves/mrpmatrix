@@ -42,16 +42,16 @@ public class FastMRP {
 
     int treeCount;
 
-    private String treesFileName;
-    private String mrpFileName;
-    private String format;
+    private final String TREES_FILENAME;
+    private final String MRP_FILENAME;
+    private final String FORMAT;
 
     Random random = null;
 
     public FastMRP(String inFileName, String outFileName, String format) {
-        treesFileName = inFileName;
-        mrpFileName = outFileName;
-        this.format = format;
+        TREES_FILENAME = inFileName;
+        MRP_FILENAME = outFileName;
+        this.FORMAT = format;
     }
 
     public void setCharacters(char newOne, char newZero, char newMissing) {
@@ -61,7 +61,7 @@ public class FastMRP {
     }
 
     private void readTreesFile() throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(treesFileName)));
+        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(TREES_FILENAME)));
         String tree;
         int treeId = 0;
         int lastColumnInd = -1;
@@ -100,7 +100,7 @@ public class FastMRP {
     }
 
     private void writeMRPToFile() throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter(mrpFileName));
+        BufferedWriter out = new BufferedWriter(new FileWriter(MRP_FILENAME));
         writeHeaderToFile(out);
         // iterate over sequences, one by one
         perTaxaInfo.startSeqIteration();
@@ -139,17 +139,17 @@ public class FastMRP {
     }
 
     private void writeFooterToFile(BufferedWriter out) throws IOException {
-        if (NEXUS.equalsIgnoreCase(format)) {
+        if (NEXUS.equalsIgnoreCase(FORMAT)) {
             out.write(NEXUS_FOOTER);
         }
     }
 
     private void writeHeaderToFile(BufferedWriter out) throws IOException {
-        if (NEXUS.equalsIgnoreCase(format)) {
+        if (NEXUS.equalsIgnoreCase(FORMAT)) {
             String header = NEXUS_HEADER.replaceFirst("@", perTaxaInfo.getNumberOfTaxa() + "").
                     replaceFirst("@", perTaxaInfo.getNumberOfBipartitions() + "");
             out.write(header);
-        } else if (PHYLIP.equalsIgnoreCase(format)) {
+        } else if (PHYLIP.equalsIgnoreCase(FORMAT)) {
             String header = PHYLIP_HEADER.replaceFirst("@", perTaxaInfo.getNumberOfTaxa() + "").
                     replaceFirst("@", perTaxaInfo.getNumberOfBipartitions() + "");
             out.write(header);
@@ -157,9 +157,9 @@ public class FastMRP {
     }
 
     private void writeSequenceNameToFile(BufferedWriter out) throws IOException {
-        if (NEXUS.equals(format)) {
+        if (NEXUS.equals(FORMAT)) {
             out.write("\t'" + perTaxaInfo.getCurrentSeqName() + "' ");
-        } else if (format.equalsIgnoreCase(PHYLIP)) {
+        } else if (FORMAT.equalsIgnoreCase(PHYLIP)) {
             out.write(perTaxaInfo.getCurrentSeqName() + " ");
         } else {
             out.write(">" + perTaxaInfo.getCurrentSeqName());
