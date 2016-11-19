@@ -38,7 +38,7 @@ public class FastMRP {
     TreeEndIndix treeEndIndix = new TreeEndIndix();
 
     // First list is the stack position, Each Collection is a bipartition (i.e index of taxa in one of the partitions)
-    LinkedList<Collection<Integer>> stack = new LinkedList<Collection<Integer>>();
+    LinkedList<Collection<Integer>> stack = new LinkedList<>();
 
     int treeCount;
 
@@ -74,7 +74,7 @@ public class FastMRP {
             while (tokenizer.hasNext()) {
                 String token = tokenizer.nextToken();
                 if ("(".equals(token)) {
-                    stack.addLast(new Vector<Integer>());
+                    stack.addLast(new Vector<>());
                 } else if (")".equals(token)) {
                     if (stack.size() > 0) {
                         Collection<Integer> top = stack.getLast();
@@ -212,22 +212,22 @@ public class FastMRP {
         /*
          * Index of 1st List ~ sequences, 2nd List's values ~ column indecies
          */
-        ArrayList<ArrayList<Integer>> columnsPerSequence = new ArrayList<ArrayList<Integer>>();
+        ArrayList<ArrayList<Integer>> columnsPerSequence = new ArrayList<>();
         /*
          * Index of Arraylist ~ sequences, Elements in HashSet ~ Trees
          */
         // TODO: can make this more memory efficient by turning the set to a list
-        ArrayList<HashSet<Integer>> treesPerSequence = new ArrayList<HashSet<Integer>>();
+        ArrayList<HashSet<Integer>> treesPerSequence = new ArrayList<>();
         /*
          * Mapping taxa names to IDs 
          */
-        HashMap<String, Integer> taxaNameToIndex = new HashMap<String, Integer>();
-        ArrayList<String> taxaNames = new ArrayList<String>();
+        HashMap<String, Integer> taxaNameToIndex = new HashMap<>();
+        ArrayList<String> taxaNames = new ArrayList<>();
         /*
          * Mapping columns to either 0 or 1 (randomly) to ensure equal 0s or 1s
          * Index ~ 
          */
-        private ArrayList<Boolean> columnCoding = new ArrayList<Boolean>();
+        private ArrayList<Boolean> columnCoding = new ArrayList<>();
 
         private Iterator<String> namesIter;
         private Iterator<HashSet<Integer>> treesIter;
@@ -263,8 +263,8 @@ public class FastMRP {
         void addTreeToSequence(Integer seq, Integer tree) {
             // If the sequence is encountered for the first time, add it to datastructures.
             if (seq >= treesPerSequence.size()) {
-                treesPerSequence.add(seq, new HashSet<Integer>());
-                columnsPerSequence.add(seq, new ArrayList<Integer>());
+                treesPerSequence.add(seq, new HashSet<>());
+                columnsPerSequence.add(seq, new ArrayList<>());
             }
             treesPerSequence.get(seq).add(tree);
         }
@@ -316,7 +316,7 @@ public class FastMRP {
          * Index to list~ tree, Integer ~ the index of the last column of the tree
          */
 
-        ArrayList<Integer> treeEndIndex = new ArrayList<Integer>();
+        ArrayList<Integer> treeEndIndex = new ArrayList<>();
         private Iterator<Integer> iter;
 
         public void addEndIndex(int lastColumnIndex) {
