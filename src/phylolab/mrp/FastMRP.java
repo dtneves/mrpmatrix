@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.Vector;
 import phylolab.NewickTokenizer;
 
 public class FastMRP {
@@ -78,7 +77,7 @@ public class FastMRP {
                 
                 if (token != null) switch (token) {
                     case "(":
-                        STACK.addLast(new Vector<>());
+                        STACK.addLast(new ArrayList<>());
                         break;
                     case ")":
                         if (STACK.size() > 0) {
