@@ -2,10 +2,9 @@ package phylolab.mrp;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -81,7 +80,7 @@ public class FastMRP {
 
     private void readTreesFile() throws IOException {
         try (BufferedReader in = new BufferedReader(
-                new InputStreamReader(new FileInputStream(TREES_FILENAME)))) {
+                new FileReader(TREES_FILENAME))) {
             String tree;
             int lastColumnIndex = -1;
 
